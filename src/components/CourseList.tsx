@@ -1,9 +1,9 @@
-import useFetchCourseList from "../hooks/useFetchCourseList";
+import useFetchData from "../hooks/useFetchData";
 import Course from "../types/Course";
 
 function CourseList() {
   const url = "http://localhost:8080/v1/courses";
-  const courseList: Array<Course> = useFetchCourseList(url);
+  const courseList = useFetchData(url) as Array<Course>;
 
   return (
     <>

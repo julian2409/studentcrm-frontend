@@ -1,24 +1,29 @@
-import axios, { AxiosResponse } from "axios";
 import { useEffect, useState } from "react";
 
-export default function useFetchData<Type>(url: string): Type | null {
-  const [data, setData] = useState<Type | null>(null);
+export default function useFetchData<T>(url: string): T[] | T {
+    const [data, setData] = useState([]);
 
-  useEffect(() => {
-    function getData() {
-      axios
-        .get<Type>(url + "/")
-        .then((response: AxiosResponse<Type>) => {
-          console.log(response);
-          setData(response.data);
-        })
-        .catch((error: Error) => {
-          console.error(error.message);
-        });
-    }
+    useEffect(() => {
+        async function getData() {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error(`Response status: ${response.status}`)
+                }
 
-    getData();
-  }, [url]);
+                const json = await response.json();
+                console.log(json);
+                setData(json);
+            } catch(error) {
+                if (error instanceof Error) {
+                    console.error(error.message);
+                } else {
+                    console.error(error);
+                }
+            }
+        }
+        getData();
+    }, [url]);
 
-  return data;
+    return data;
 }
